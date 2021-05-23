@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Start/stop aplay to /dev/zero
+#
+
+DAEMON=/usr/bin/aplay
+ARGS="-D default -t raw -r 44100 -c 2 -f S16_LE /dev/zero"
+CONFIG=
+PIDFILE=/var/run/aplay-zero.pid
+
+[ -f $DAEMON ] || exit 0
+
+case "$1" in
+  start)
+	echo "Starting aplay to /dev/zero..."
+    # Notice the args are passed as descrete strings
+	start-stop-daemon -S -b -m -x "$DAEMON" -p "$PIDFILE" -- "-D" "default" "-t" "raw" "-r 44100" "-c 2" "-f" "S16_LE" "/dev/zero"
+	;;
+  stop)
+	echo "Stopping aplay..."
+	start-stop-daemon -K -x "$DAEMON" -p "$PIDFILE" -o
+	;;
+  restart)
+	"$0" stop
+	sleep 1 # Prevent race condition: ensure aplay stops before start.
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac

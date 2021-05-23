@@ -1,0 +1,13 @@
+# Network interfaces configuration for Lark Alarm
+
+auto lo
+iface lo inet loopback
+
+auto wlan0
+iface wlan0 inet dhcp
+    allow-hotplug wlan0
+    pre-up wpa_supplicant -B -D wext -i wlan0 -c /etc/wpa_supplicant.conf
+    post-down killall -q wpa_supplicant
+    wait-delay 15
+
+

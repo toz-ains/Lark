@@ -1,0 +1,2 @@
+lark -1 lark -1 =lark /home/lark /bin/sh alarm Lark user
+
