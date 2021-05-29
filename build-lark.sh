@@ -16,12 +16,26 @@ DISCLAIMER
 
 # Target config
 HARDWARE="pi_2"
-BUILDROOT_VER="2020.02.3"
+BUILDROOT_VER="2021.02"
 BUILDROOT_PACKAGE="buildroot-${BUILDROOT_VER}"
+BUILDROOT_URL="https://buildroot.org/downloads/"
 BR2_EXTERNAL="../../external/Lark-Alarm/"
 
 # Target Configuration
 LARK_CONFIG="lark_${HARDWARE}_defconfig"
+
+function get_buildroot
+{
+    # Make sure we have the buildroot tar ball
+    if [ ! -e ./${BUILDROOT_PACKAGE}.tar.bz2 ]; then
+        # Download buildroot
+        wget ${BUILDROOT_URL}/${BUILDROOT_PACKAGE}.tar.bz2
+        if [$? -ne 0 ]; then
+            echo "Failed to download buildroot package: ${BUILDROOT_PACKAGE}.tar.bz2."
+            exit 1
+        fi
+    fi
+}
 
 function extract_buildroot
 {
@@ -38,9 +52,11 @@ function extract_buildroot
     fi
 }
 
-
 #
 # Main script
+
+# Get desired buildroot tarball
+get_buildroot
 
 # Extract the buildroot package
 extract_buildroot
